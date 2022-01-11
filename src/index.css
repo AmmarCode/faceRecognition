@@ -1,6 +1,5 @@
 body {
   background: linear-gradient(98deg, #00cccc 15%, #99ff99);
-  font-family: 'SEGA LOGO FONT';
 }
 
 @font-face {
@@ -8,4 +7,8 @@ body {
   font-style: normal;
   font-weight: normal;
   src: local('SEGA LOGO FONT'), url('SEGA.woff') format('woff');
+  }
+
+  .sega {
+    font-family: 'SEGA LOGO FONT';
   }

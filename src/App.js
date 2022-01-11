@@ -1,17 +1,13 @@
-import React from "react";
-import { Clarifai } from 'clarifai';
+import { React, Component } from "react";
 import "./App.css";
 import Particles from "react-tsparticles";
 import Navigation from "./components/Navigation/Navigation";
 import Logo from "./components/Logo/Logo";
 import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
 import Rank from "./components/Rank/Rank";
-import react from "react";
-
-
-const appp = new Clarifai.App({
-  apiKey: 'b2da1bd89c90403396f411d2a1104fca'
- });
+import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
+import Signin from "./components/Signin/Signin";
+import Register from './components/Register/Register';
 
 const particlesOptions = {
   fpsLimit: 30,
@@ -86,37 +82,49 @@ const particlesOptions = {
   detectRetina: true,
 };
 
-class App extends react.Component {
+class App extends Component {
   constructor() {
     super();
     this.state = {
       input: "",
+      imageUrl: "",
+      route: "signin",
     };
   }
 
   onInputChange = (event) => {
-    console.log(event.target.value);
+    this.setState({ input: event.target.value });
   };
 
   onSubmit = () => {
     console.log("submitClicked");
-    appp.predict(
-      "45fb9a671625463fa646c3523a3087d5",
-      this.state.input
-    )
-    .then(
-      response => console.log(response)
-    )
+    this.setState({ imageUrl: this.state.input });
   };
+
+  onRouteChange = (route) => {
+    this.setState({route: route})
+  }
 
   render() {
     return (
       <div>
         <Particles id="tsparticles" options={particlesOptions} />
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
+        <Navigation currentRoute={this.state.route} onRouteChange={this.onRouteChange} />
+        {this.state.route === "signin" ? (
+          <Signin onRouteChange={this.onRouteChange} />
+        ): this.state.route === "register" ? (
+          <Register onRouteChange={this.onRouteChange} />
+        ): (
+          <div>
+            <Logo />
+            <Rank />
+            <ImageLinkForm
+              onInputChange={this.onInputChange}
+              onSubmit={this.onSubmit}
+            />
+            <FaceRecognition imageUrl={this.state.input} />
+          </div>
+        )}
       </div>
     );
   }
