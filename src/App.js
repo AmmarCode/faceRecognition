@@ -7,7 +7,7 @@ import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
 import Rank from "./components/Rank/Rank";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Signin from "./components/Signin/Signin";
-import Register from './components/Register/Register';
+import Register from "./components/Register/Register";
 
 const particlesOptions = {
   fpsLimit: 30,
@@ -66,7 +66,7 @@ const particlesOptions = {
         enable: true,
         area: 700,
       },
-      value: 110,
+      value: 90,
     },
     opacity: {
       value: 0.5,
@@ -89,8 +89,29 @@ class App extends Component {
       input: "",
       imageUrl: "",
       route: "signin",
+      user: {
+        id: "",
+        name: "",
+        email: "",
+        password: "",
+        requests: 0,
+        joinedAt: "",
+      },
     };
   }
+
+  loadUser = (data) => {
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        requests: data.requests,
+        joinedAt: data.joinedat,
+      },
+    });
+    console.log(this.state.user)
+  };
 
   onInputChange = (event) => {
     this.setState({ input: event.target.value });
@@ -99,25 +120,51 @@ class App extends Component {
   onSubmit = () => {
     console.log("submitClicked");
     this.setState({ imageUrl: this.state.input });
+    fetch('http://localhost:5000/image', {
+      method:'put',
+      headers:{'Content-Type': "application/json"},
+      body:JSON.stringify({
+        id: this.state.user.id
+      })
+    })
+      .then(res => res.json())
+      .then(count => {
+        console.log(count)
+        this.setState(Object.assign(this.state.user, {requests: count}))
+        console.log(this.state.user.name)
+        console.log(this.state.user.requests)
+      })
   };
 
   onRouteChange = (route) => {
-    this.setState({route: route})
-  }
+    this.setState({ route: route });
+  };
 
   render() {
     return (
       <div>
         <Particles id="tsparticles" options={particlesOptions} />
-        <Navigation currentRoute={this.state.route} onRouteChange={this.onRouteChange} />
+        <Navigation
+          currentRoute={this.state.route}
+          onRouteChange={this.onRouteChange}
+        />
         {this.state.route === "signin" ? (
-          <Signin onRouteChange={this.onRouteChange} />
-        ): this.state.route === "register" ? (
-          <Register onRouteChange={this.onRouteChange} />
-        ): (
+          <Signin 
+            onRouteChange={this.onRouteChange} 
+            loadUser={this.loadUser}
+          />
+        ) : this.state.route === "register" ? (
+          <Register
+            onRouteChange={this.onRouteChange}
+            loadUser={this.loadUser}
+          />
+        ) : (
           <div>
             <Logo />
-            <Rank />
+            <Rank 
+              name={this.state.user.name}
+              requests={this.state.user.requests}
+            />
             <ImageLinkForm
               onInputChange={this.onInputChange}
               onSubmit={this.onSubmit}
