@@ -7,7 +7,7 @@ const Rank = ({name, requests}) => {
 				{`${name} your current request count is ...`}
 			</div>
 			<div className='sega f1 center'>
-				{`${Object.values(requests)}`}
+				{Object.values(requests)}
 			</div>
 		</div>
 	)

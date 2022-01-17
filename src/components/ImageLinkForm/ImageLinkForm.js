@@ -4,7 +4,9 @@ import "tachyons";
 const ImageLinkForm = ({ onInputChange, onSubmit }) => {
   return (
     <div className="relative">
-      <p className="center f2">{"Try this cool face recognition feature"}</p>
+      <p className="center f2">
+        {"Try this cool face recognition feature"}
+      </p>
       <div className="center">
         <div
           className="center pa4 br3 shadow-5"
@@ -13,13 +15,13 @@ const ImageLinkForm = ({ onInputChange, onSubmit }) => {
           }}
         >
           <input
-            className="pa2 f4 w-70 dib pv2 center"
+            className="f4 pa2 w-70 center"
             type="text"
             onChange={onInputChange}
           />
           <button
             className="sega w-30 grow f4 link ph3 pv2 dib bg-light-green center"
-			onClick={onSubmit}
+            onClick={onSubmit}
           >
             Detect
           </button>
