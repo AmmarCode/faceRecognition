@@ -25,11 +25,10 @@ class Register extends Component{
   onSubmitRegister = (e) => {
     e.preventDefault();
     console.log(this.state)
-    fetch('http://localhost:5000/register', {
+    fetch('https://face-detector01.herokuapp.com/register', {
       method: "post",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
-        id:123,
         name: this.state.name,
         email: this.state.email,
         password: this.state.password
@@ -38,7 +37,7 @@ class Register extends Component{
       .then(res => res.json())
       .then(user => {
         console.log(user)
-        if (user[0].name) {
+        if (user.id) {
           this.props.loadUser(user)
           this.props.onRouteChange('home')
         } else {
