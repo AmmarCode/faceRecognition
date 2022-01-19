@@ -36,9 +36,9 @@ class  Signin extends Component{
           this.props.onRouteChange("home")
         } else {
           console.log("Error siging in")
-        }
-        
-      })    
+        }        
+      })
+      .catch(err => console.log(err))
   }
 
   render() {

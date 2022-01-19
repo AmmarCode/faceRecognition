@@ -1,7 +1,6 @@
 import { React, Component } from "react";
 import "./App.css";
 import Particles from "react-tsparticles";
-import Clarifai from "clarifai";
 import Navigation from "./components/Navigation/Navigation";
 import Logo from "./components/Logo/Logo";
 import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
@@ -10,9 +9,6 @@ import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Signin from "./components/Signin/Signin";
 import Register from "./components/Register/Register";
 
-const app = new Clarifai.App({
-  apiKey: "985518c37a4441c2acb55171d6929eea",
-});
 
 const particlesOptions = {
   fpsLimit: 30,
@@ -87,23 +83,25 @@ const particlesOptions = {
   detectRetina: true,
 };
 
+const initialState = {
+  input: "",
+  imageUrl: "",
+  box: {},
+  route: "signin",      
+  user: {
+    id: "",
+    name: "",
+    email: "",
+    password: "",
+    requests: 0,
+    joinedAt: "",
+  },
+};
+
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: "",
-      imageUrl: "",
-      box: {},
-      route: "signin",      
-      user: {
-        id: "",
-        name: "",
-        email: "",
-        password: "",
-        requests: 0,
-        joinedAt: "",
-      },
-    };
+    this.state = initialState;
   }
 
   loadUser = (data) => {
@@ -145,31 +143,41 @@ class App extends Component {
   onSubmit = () => {
     console.log("submitClicked");
     this.setState({ imageUrl: this.state.input });
-    app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-      .then((response) => {
-        console.log("hi", response);
-        if (response) {
-          fetch("http://localhost:5000/image", {
-            method: "put",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: this.state.user.id,
-            }),
-          })
-            .then((response) => response.json())
-            .then((count) => {
-              this.setState(
-                Object.assign(this.state.user, { requests: count })
-              );
-            });
-        }
-        this.displayFaceBox(this.calculateFaceLocation(response));
+    fetch("http://localhost:5000/imageurl", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: this.state.input
       })
-      .catch((err) => console.log(err));
+    })
+    .then((response) => response.json())
+    .then((response) => {
+      // console.log(response);
+      if (response) {
+        fetch("http://localhost:5000/image", {
+          method: "put",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: this.state.user.id,
+          }),
+        })
+          .then((response) => response.json())
+          .then((count) => {
+            this.setState(
+              Object.assign(this.state.user, { requests: count })
+            );
+          })
+          .catch(err => console.log(err));
+      }
+      this.displayFaceBox(this.calculateFaceLocation(response));
+    })
+    .catch((err) => console.log(err));
   };
 
   onRouteChange = (route) => {
+    if (route === "signin") {
+      this.setState(initialState);
+    }
     this.setState({ route: route });
   };
 

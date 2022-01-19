@@ -37,11 +37,15 @@ class Register extends Component{
     })
       .then(res => res.json())
       .then(user => {
-        if (user) {
+        console.log(user)
+        if (user[0].name) {
           this.props.loadUser(user)
           this.props.onRouteChange('home')
+        } else {
+          console.log("Error registering")
         }
-      })    
+      })
+      .catch(err => console.log(err))   
   }
 
   render() {
