@@ -18,6 +18,7 @@ const ImageLinkForm = ({ onInputChange, onSubmit }) => {
             className="f4 pa2 w-70 center"
             type="text"
             onChange={onInputChange}
+            placeholder="Paste an image url here"
           />
           <button
             className="sega w-30 grow f4 link ph3 pv2 dib bg-light-green center"
